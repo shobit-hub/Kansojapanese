@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KANSO - Simple Aesthetics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2a2a2a;
+            --secondary-color: #f8f8f8;
+            --accent-color: #8b4513;
+            --text-light: #666;
+            --white: #ffffff;
+            --warm-gray: #f5f5f5;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--white);
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 300;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 2px;
+            background: var(--primary-color);
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, var(--secondary-color) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 200;
+            letter-spacing: 8px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-weight: 300;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.5s forwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 300;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease 1s forwards;
+        }
+
+        .cta-button:hover {
+            background: var(--primary-color);
+            color: var(--white);
+            transform: translateY(-2px);
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 5rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 200;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-color);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-light);
+        }
+
+        .about-image {
+            width: 100%;
+            height: 400px;
+            background: var(--warm-gray);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .about-image::before {
+            content: 'Traditional Beauty';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: var(--text-light);
+            font-weight: 300;
+        }
+
+        /* Collection Grid */
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .collection-item {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .collection-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+        }
+
+        .collection-image {
+            width: 100%;
+            height: 300px;
+            background: var(--warm-gray);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .collection-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, var(--warm-gray), var(--secondary-color));
+        }
+
+        .collection-info {
+            padding: 1.5rem;
+        }
+
+        .collection-title {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        .collection-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Lookbook Section */
+        .lookbook-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .lookbook-item {
+            height: 350px;
+            background: var(--warm-gray);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .lookbook-item:hover {
+            transform: scale(1.02);
+        }
+
+        .lookbook-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.3));
+        }
+
+        /* Shop Section */
+        .shop-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .shop-category {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .shop-category:hover {
+            background: var(--warm-gray);
+            transform: translateY(-2px);
+        }
+
+        .shop-category h3 {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .shop-category p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Sustainability Section */
+        .sustainability {
+            background: var(--secondary-color);
+            padding: 5rem 5%;
+        }
+
+        .sustainability-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .sustainability-values {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .value-item {
+            padding: 2rem;
+            background: var(--white);
+            border-radius: 2px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .value-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-title {
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .value-description {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .footer-section a {
+            color: var(--white);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            color: var(--text-light);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+                letter-spacing: 4px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .collection-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lookbook-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .sustainability-values {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 3rem 5%;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .lookbook-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 1rem 3%;
+            }
+
+            .section {
+                padding: 2rem 3%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="nav-container">
+        <nav>
+            <a href="#" class="logo">KANSO</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#collection">Collection</a></li>
+                <li><a href="#lookbook">Lookbook</a></li>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#sustainability">Sustainability</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>SIMPLE AESTHETICS</h1>
+            <p class="hero-subtitle">Where Japanese tradition meets contemporary fashion</p>
+            <a href="#collection" class="cta-button">View Collection</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <h2 class="section-title">About Us</h2>
+        <p class="section-subtitle">KANSO embodies the Japanese aesthetic principles of simplicity, subtle beauty, and the power of emptiness in contemporary fashion.</p>
+        <div class="about-content">
+            <div class="about-text">
+                <p>We draw inspiration from the traditional Japanese aesthetic principles of <em>Kanso</em> (simplicity), <em>Shibui</em> (subtle beauty), and <em>Ma</em> (the power of emptiness). Our designs embrace minimalism not as a trend, but as a philosophy of life.</p>
+                <br>
+                <p>By removing the unnecessary and focusing on the essential, we create garments that speak to the soul. Each piece is carefully crafted using sustainable materials and traditional techniques, ensuring both beauty and longevity that transcends seasonal trends.</p>
+            </div>
+            <div class="about-image"><img src="../webdesign jury/image/item_10_kv.jpg" width="100%" height="auto" alt=""/></div>
+        </div>
+    </section>
+
+    <!-- Collection Section -->
+    <section id="collection" class="section">
+        <h2 class="section-title">Collections</h2>
+        <p class="section-subtitle">Seasonal collections that reflect the changing beauty of nature and the timeless principles of Japanese design.</p>
+        <div class="collection-grid">
+            <div class="collection-item">
+                <div></div>
+                <img src="../webdesign jury/image/loro-piana-spring-1698268920818.jpg" width="100%" height="auto" alt=""/>
+                <div class="collection-info">
+                  <h3 class="collection-title">Spring / Summer</h3>
+                    <p class="collection-description">Inspired by the gentle awakening of cherry blossoms, featuring light, flowing fabrics and soft silhouettes.</p>
+              </div>
+            </div>
+            <div class="collection-item">
+                <div></div>
+                <img src="../webdesign jury/image/ToS_FW24_Look_29.jpg" width="100%" height="auto" alt=""/>
+                <div class="collection-info">
+                  <h3 class="collection-title">Fall / Winter</h3>
+                    <p class="collection-description">Capturing the contemplative beauty of autumn leaves, with warm textures and earth-toned palette.</p>
+              </div>
+            </div>
+            <div class="collection-item">
+              <div></div>
+                <img src="../webdesign jury/image/product-detail-regular246W2007-624-KW-765_2W8wibbR1q.jpg" width="100%" height="auto" alt=""/>
+                <div class="collection-info">
+                  <h3 class="collection-title">Limited Edition</h3>
+                    <p class="collection-description">Exclusive pieces handcrafted by master artisans, available in limited quantities.</p>
+              </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lookbook Section -->
+    <section id="lookbook" class="section">
+        <h2 class="section-title">Lookbook</h2>
+        <p class="section-subtitle">Seasonal styling inspiration that celebrates the art of thoughtful dressing.</p>
+        <div class="lookbook-gallery">
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/279b1b14-e362-4299-b17e-541df239dc64.png" width="100%" height="auto" alt=""/></div>
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/3115f027-4bc0-470c-bbb8-fa31426c5950.png" width="100%" height="auto" alt=""/></div>
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/ba5fe90b-2fdb-4ffa-8165-7e3a9368e9df.png" width="100%" height="auto" alt=""/></div>
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/d6fc1c53-0507-495f-a8a0-6257a7fe3003.png" width="100%" height="auto" alt=""/></div>
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/e052e363-d388-4347-b92b-1a49d2510c0c.png" width="100%" height="auto" alt=""/></div>
+            <div class="lookbook-item"><img src="../webdesign jury/lookbook/new/faef9394-9848-485b-a12b-a7fe377c4267.png" width="100%" height="auto" alt=""/></div>
+        </div>
+    </section>
+
+    <!-- Shop Section -->
+    <section id="shop" class="section">
+        <h2 class="section-title">Shop</h2>
+        <p class="section-subtitle">Discover our carefully curated selection of timeless pieces.</p>
+        <div class="shop-categories">
+            <div class="shop-category">
+                <h3>New Arrivals</h3>
+                <p>Latest pieces from our current season</p>
+            </div>
+            <div class="shop-category">
+                <h3>Dresses</h3>
+                <p>Elegant silhouettes for every occasion</p>
+            </div>
+            <div class="shop-category">
+                <h3>Separates</h3>
+                <p>Versatile pieces for mindful wardrobing</p>
+            </div>
+            <div class="shop-category">
+                <h3>Accessories</h3>
+                <p>Thoughtfully designed finishing touches</p>
+            </div>
+            <div class="shop-category">
+                <h3>Sale</h3>
+                <p>Selected pieces at special prices</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sustainability Section -->
+    <section id="sustainability" class="sustainability">
+        <div class="sustainability-content">
+            <h2 class="section-title">Sustainability</h2>
+            <p class="section-subtitle">Our commitment to environmental stewardship and ethical practices guides every decision we make.</p>
+            <div class="sustainability-values">
+                <div class="value-item">
+                    <div class="value-icon"><img src="../webdesign jury/icons/ccb12c1c-b756-476b-b5dd-4668dd18bc18.png" width="60" height="auto" alt=""/>&nbsp;</div>
+                    <h3 class="value-title">Natural Materials</h3>
+                    <p class="value-description">We use only organic cotton, linen, and other sustainable fibers that honor both body and earth.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon"><img src="../webdesign jury/icons/9832b9a4-b030-4d0e-90ee-574dbd5fadfa.png" width="60" height="auto" alt=""/>&nbsp;</div>
+                    <h3 class="value-title">Artisan Craftsmanship</h3>
+                    <p class="value-description">Each garment is created by skilled craftspeople who take pride in their traditional techniques.</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon"><img src="../webdesign jury/image/Green_Recycle_Logo_PNG_Clip_Art-3212.png" width="40" height="auto" alt=""/>&nbsp;</div>
+                    <h3 class="value-title">Circular Design</h3>
+                    <p class="value-description">We design for longevity and offer repair services to extend the life of every piece.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>KANSO</h3>
+                <p>A fashion brand that brings Japanese aesthetics to contemporary life.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Navigation</h3>
+                <a href="#about">About Us</a>
+                <a href="#collection">Collections</a>
+                <a href="#lookbook">Lookbook</a>
+                <a href="#shop">Shop</a>
+            </div>
+            <div class="footer-section">
+                <h3>Support</h3>
+                <a href="#">Contact</a>
+                <a href="#">Size Guide</a>
+                <a href="#">Shipping</a>
+                <a href="#">Returns</a>
+            </div>
+            <div class="footer-section">
+                <h3>Follow</h3>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Facebook</a>
+                <a href="#">Newsletter</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 KANSO. All rights reserved. | Privacy Policy | Terms of Service</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for scroll animations
+        document.querySelectorAll('.collection-item, .lookbook-item, .value-item, .shop-category').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
